@@ -80,6 +80,8 @@ impl Game {
             m.set_volume(0.45);
             m.play_stream();
         }
+        let pickup_sound = audio.new_sound("music/sonido.mp3").ok();
+
         while !self.rl.window_should_close() {
             let now = std::time::Instant::now();
             let dt = (now - prev).as_secs_f32();
@@ -139,6 +141,9 @@ impl Game {
                             if grid[gy][gx] == Cell::Folder {
                                 grid[gy][gx] = Cell::Floor;
                                 self.folders_collected += 1;
+                                if let Some(snd) = pickup_sound.as_ref() {
+                                    snd.play();
+                                }
                             }
                         }
                         let mut success = false;
