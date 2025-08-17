@@ -18,6 +18,7 @@ pub struct Game {
     levels: Vec<(String, String)>,
     selected_level_idx: usize,
     menu_bg: Option<Texture2D>,
+    elapsed_time: f32,
 }
 
 impl Game {
@@ -45,6 +46,7 @@ impl Game {
             levels,
             selected_level_idx: 0,
             menu_bg,
+            elapsed_time: 0.0,
         })
     }
 
@@ -82,6 +84,7 @@ impl Game {
             let now = std::time::Instant::now();
             let dt = (now - prev).as_secs_f32();
             prev = now;
+            self.elapsed_time += dt;
             let mut input = crate::events::Input::new();
             input.poll(&mut self.rl);
             if let Some(m) = music.as_mut() {
@@ -142,7 +145,7 @@ impl Game {
                         if gy < grid.len() && gx < grid[0].len() { if grid[gy][gx] == Cell::Goal { success = true; } }
                         let fps = self.rl.get_fps() as i32;
                         let mut d = self.rl.begin_drawing(&self.thread);
-                        render(&mut d, &self.textures, grid, player, self.folders_collected, fps);
+                        render(&mut d, &self.textures, grid, player, self.folders_collected, fps, self.elapsed_time);
                         if success { self.state = GameState::Completed; }
                     } else {
                         self.state = GameState::Menu;

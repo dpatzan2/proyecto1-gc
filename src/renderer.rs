@@ -16,6 +16,8 @@ pub fn render(
     player: &Player,
     folders_collected: usize,
     fps: i32,
+    // Tiempo acumulado para animaciones
+    elapsed_time: f32,
 ) {
     let cell_size = 64.0f32;
     d.clear_background(Color::new(100, 150, 255, 255));
@@ -71,7 +73,7 @@ pub fn render(
     }
 
     draw_minimap(d, grid, player);
-    draw_world_sprites(d, grid, cell_size, player, textures);
+    draw_world_sprites(d, grid, cell_size, player, textures, elapsed_time);
     d.draw_text(&format!("Folders: {}", folders_collected), 10, SCREEN_H - 28, 20, Color::new(255,255,255,255));
     d.draw_text(&format!("FPS: {}", fps), SCREEN_W - 100, 10, 20, Color::new(255,255,255,255));
 }
@@ -196,28 +198,32 @@ fn draw_minimap(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, player: &Player
     d.draw_line(px as i32, py as i32, r_end.x as i32, r_end.y as i32, Color::new(255, 255, 255, 140));
 }
 
-fn draw_world_sprites(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, cell_size: f32, player: &Player, textures: &Textures) {
+// Tipo de animación por sprite
+#[derive(Clone, Copy)]
+enum SpriteAnim { Guard, Folder }
+
+fn draw_world_sprites(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, cell_size: f32, player: &Player, textures: &Textures, elapsed_time: f32) {
     let rows = grid.len();
     let cols = grid[0].len();
     
-    let mut sprites = Vec::new();
+    let mut sprites: Vec<(f32, f32, &raylib::texture::Texture2D, SpriteAnim)> = Vec::new();
     for r in 0..rows {
         for c in 0..cols {
             match grid[r][c] {
                 Cell::Guard1 => {
                     let sx = (c as f32 + 0.5) * cell_size;
                     let sy = (r as f32 + 0.5) * cell_size;
-                    sprites.push((sx, sy, &textures.guard1));
+                    sprites.push((sx, sy, &textures.guard1, SpriteAnim::Guard));
                 }
                 Cell::Guard2 => {
                     let sx = (c as f32 + 0.5) * cell_size;
                     let sy = (r as f32 + 0.5) * cell_size;
-                    sprites.push((sx, sy, &textures.guard2));
+                    sprites.push((sx, sy, &textures.guard2, SpriteAnim::Guard));
                 }
                 Cell::Folder => {
                     let sx = (c as f32 + 0.5) * cell_size;
                     let sy = (r as f32 + 0.5) * cell_size;
-                    sprites.push((sx, sy, &textures.folder));
+                    sprites.push((sx, sy, &textures.folder, SpriteAnim::Folder));
                 }
                 _ => {}
             }
@@ -230,9 +236,9 @@ fn draw_world_sprites(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, cell_size
         da
     });
 
-    for (i, (sx, sy, tex)) in sprites.iter().enumerate() {
+    for (i, (sx, sy, tex, kind)) in sprites.iter().enumerate() {
         if i > 64 { break; }
-        draw_sprite_simple(d, grid, cell_size, player, *sx, *sy, tex);
+        draw_sprite_animated(d, grid, cell_size, player, *sx, *sy, tex, *kind, elapsed_time);
     }
 }
 
@@ -261,7 +267,7 @@ fn has_wall_between(grid: &Vec<Vec<Cell>>, cell_size: f32, player_x: f32, player
     false
 }
 
-fn draw_sprite_simple(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, cell_size: f32, player: &Player, sx: f32, sy: f32, tex: &raylib::texture::Texture2D) {
+fn draw_sprite_animated(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, cell_size: f32, player: &Player, sx: f32, sy: f32, tex: &raylib::texture::Texture2D, kind: SpriteAnim, elapsed: f32) {
     let dx = sx - player.x;
     let dy = sy - player.y;
     let dist = (dx*dx + dy*dy).sqrt();
@@ -282,10 +288,28 @@ fn draw_sprite_simple(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, cell_size
     
     let screen_x = ((relative_angle + half_fov) / FOV) * (SCREEN_W as f32);
     
-    let sprite_height = (64.0 * (SCREEN_H as f32) / dist) as i32;
-    let sprite_height = sprite_height.min(SCREEN_H * 2);
-    
-    let sprite_y = (SCREEN_H - sprite_height) / 2;
+    // Altura base por perspectiva
+    let mut sprite_height = (64.0 * (SCREEN_H as f32) / dist) as i32;
+    sprite_height = sprite_height.min(SCREEN_H * 2);
+
+    // Animaciones simples usando seno: bobbing y pulso de escala
+    let phase = (sx + sy) * 0.05; // desfasar por posición para evitar sincronía perfecta
+    let (scale_mul, y_bob) = match kind {
+        SpriteAnim::Folder => {
+            // Más notorio para resaltar que es coleccionable
+            let s = (elapsed * 3.0 + phase).sin();
+            (1.0 + 0.20 * s, (elapsed * 4.0 + phase).sin() * 6.0)
+        }
+        SpriteAnim::Guard => {
+            // Sutil respiración
+            let s = (elapsed * 2.0 + phase).sin();
+            (1.0 + 0.05 * s, (elapsed * 2.0 + phase).sin() * 3.0)
+        }
+    };
+
+    let sprite_height = (sprite_height as f32 * scale_mul) as i32;
+    let mut sprite_y = (SCREEN_H - sprite_height) / 2;
+    sprite_y += y_bob as i32;
     let sprite_x = screen_x as i32 - (sprite_height / 2);
     
     if sprite_x + sprite_height < 0 || sprite_x >= SCREEN_W { return; }
