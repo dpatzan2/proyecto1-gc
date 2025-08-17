@@ -3,6 +3,7 @@ use crate::level::{load_level_from_file, Cell};
 use crate::player::Player;
 use crate::texture::Textures;
 use crate::renderer::{render, SCREEN_W, SCREEN_H};
+use raylib::audio::RaylibAudio;
 
 enum GameState { Menu, Playing, Completed }
 
@@ -70,12 +71,26 @@ impl Game {
     pub fn run(&mut self) {
         let mut prev = std::time::Instant::now();
         let cell_size = 64.0f32;
+        let audio = RaylibAudio::init_audio_device().expect("No se pudo inicializar el audio");
+        let music_path = "music/fondo.mp3";
+        let mut music = audio.new_music(music_path).ok();
+        if let Some(m) = music.as_mut() {
+            m.set_volume(0.45);
+            m.play_stream();
+        }
         while !self.rl.window_should_close() {
             let now = std::time::Instant::now();
             let dt = (now - prev).as_secs_f32();
             prev = now;
             let mut input = crate::events::Input::new();
             input.poll(&mut self.rl);
+            if let Some(m) = music.as_mut() {
+                m.update_stream();
+                if !m.is_stream_playing() {
+                    m.seek_stream(0.0);
+                    m.play_stream();
+                }
+            }
             if input.exit { break; }
 
             match self.state {

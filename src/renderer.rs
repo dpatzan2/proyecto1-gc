@@ -20,35 +20,22 @@ pub fn render(
     let cell_size = 64.0f32;
     d.clear_background(Color::new(100, 150, 255, 255));
     
-    let is_on_goal = {
-        let cx = (player.x / cell_size).floor();
-        let cy = (player.y / cell_size).floor();
-        if cx >= 0.0 && cy >= 0.0 {
-            let gx = cx as usize;
-            let gy = cy as usize;
-            gy < grid.len() && gx < grid[0].len() && grid[gy][gx] == Cell::Goal
-        } else {
-            false
-        }
-    };
-
-    if is_on_goal {
-        d.draw_rectangle(0, SCREEN_H/2, SCREEN_W, SCREEN_H/2, Color::GOLD);
-    } else {
-        let floor_tile_size = 128;
-        let tiles_x = (SCREEN_W + floor_tile_size - 1) / floor_tile_size;
-        let tiles_y = (SCREEN_H/2 + floor_tile_size - 1) / floor_tile_size;
-        
-        for ty in 0..tiles_y {
-            for tx in 0..tiles_x {
-                let x = tx * floor_tile_size;
-                let y = SCREEN_H/2 + ty * floor_tile_size;
-                let dest_rect = Rectangle::new(x as f32, y as f32, floor_tile_size as f32, floor_tile_size as f32);
-                let src_rect = Rectangle::new(0.0, 0.0, textures.floor.width as f32, textures.floor.height as f32);
-                d.draw_texture_pro(&textures.floor, src_rect, dest_rect, Vector2::zero(), 0.0, Color::new(100,100,100,255));
-            }
+    // Draw floor texture as background (bottom half)
+    let floor_tile_size = 128;
+    let tiles_x = (SCREEN_W + floor_tile_size - 1) / floor_tile_size;
+    let tiles_y = (SCREEN_H/2 + floor_tile_size - 1) / floor_tile_size;
+    for ty in 0..tiles_y {
+        for tx in 0..tiles_x {
+            let x = tx * floor_tile_size;
+            let y = SCREEN_H/2 + ty * floor_tile_size;
+            let dest_rect = Rectangle::new(x as f32, y as f32, floor_tile_size as f32, floor_tile_size as f32);
+            let src_rect = Rectangle::new(0.0, 0.0, textures.floor.width as f32, textures.floor.height as f32);
+            d.draw_texture_pro(&textures.floor, src_rect, dest_rect, Vector2::zero(), 0.0, Color::new(100,100,100,255));
         }
     }
+
+    // Overlay solid color only where floor samples fall on Goal tiles (perspective-correct patches)
+    overlay_goal_floor(d, grid, player, cell_size);
 
     let screen_w = SCREEN_W as usize;
     for x in (0..screen_w).step_by(RAY_STRIDE) {
@@ -87,6 +74,58 @@ pub fn render(
     draw_world_sprites(d, grid, cell_size, player, textures);
     d.draw_text(&format!("Folders: {}", folders_collected), 10, SCREEN_H - 28, 20, Color::new(255,255,255,255));
     d.draw_text(&format!("FPS: {}", fps), SCREEN_W - 100, 10, 20, Color::new(255,255,255,255));
+}
+
+fn overlay_goal_floor(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, player: &Player, cell_size: f32) {
+    // Camera basis
+    let dir_x = player.dir.cos();
+    let dir_y = player.dir.sin();
+    let plane_len = (FOV * 0.5).tan();
+    let plane_x = -dir_y * plane_len;
+    let plane_y =  dir_x * plane_len;
+
+    // Ray directions for left and right sides of the screen
+    let ray0_x = dir_x - plane_x;
+    let ray0_y = dir_y - plane_y;
+    let ray1_x = dir_x + plane_x;
+    let ray1_y = dir_y + plane_y;
+
+    let w = SCREEN_W as f32;
+    let h = SCREEN_H as f32;
+    let pos_z = h * 0.5; // camera height in screen-space units
+
+    let rows = grid.len() as i32;
+    let cols = grid[0].len() as i32;
+
+    // For each scanline below the horizon
+    for y in (SCREEN_H/2 + 1)..SCREEN_H {
+        let p = (y - SCREEN_H/2) as f32;
+        let row_dist = pos_z / p; // distance from camera to this row in world units (approx.)
+
+        // World position for the leftmost pixel of this row and the step per pixel
+        let mut floor_x = player.x + row_dist * ray0_x;
+        let mut floor_y = player.y + row_dist * ray0_y;
+        let step_x = row_dist * (ray1_x - ray0_x) / w;
+        let step_y = row_dist * (ray1_y - ray0_y) / w;
+
+        let stride = RAY_STRIDE as i32;
+        let mut x = 0i32;
+        while x < SCREEN_W {
+            let cell_x = (floor_x / cell_size) as i32;
+            let cell_y = (floor_y / cell_size) as i32;
+
+            if cell_x >= 0 && cell_y >= 0 && cell_y < rows && cell_x < cols {
+                if grid[cell_y as usize][cell_x as usize] == Cell::Goal {
+                    // Draw a small horizontal segment covering the stride at this scanline
+                    d.draw_rectangle(x, y, stride.min(SCREEN_W - x), 1, Color::GOLD);
+                }
+            }
+
+            floor_x += step_x * (RAY_STRIDE as f32);
+            floor_y += step_y * (RAY_STRIDE as f32);
+            x += stride;
+        }
+    }
 }
 
 fn draw_minimap(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, player: &Player) {
