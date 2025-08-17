@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/DiegoPatzan/Documents/UVG/6TO/GRAFICAS/proyecto1/target/debug/build/raylib-sys-9024dfee5c614e48/out/build/cmake_install.cmake",
+		"/home/DiegoPatzan/Documents/UVG/6TO/GRAFICAS/proyecto1/target/debug/build/raylib-sys-9024dfee5c614e48/out/build/raylib/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

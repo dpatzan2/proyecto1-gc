@@ -1,0 +1,10 @@
+/home/DiegoPatzan/Documents/UVG/6TO/GRAFICAS/proyecto1/target/release/deps/avif_serialize-b4cd1293c86acd16.d: /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/lib.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/boxes.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/constants.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/writer.rs
+
+/home/DiegoPatzan/Documents/UVG/6TO/GRAFICAS/proyecto1/target/release/deps/libavif_serialize-b4cd1293c86acd16.rlib: /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/lib.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/boxes.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/constants.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/writer.rs
+
+/home/DiegoPatzan/Documents/UVG/6TO/GRAFICAS/proyecto1/target/release/deps/libavif_serialize-b4cd1293c86acd16.rmeta: /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/lib.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/boxes.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/constants.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/writer.rs
+
+/home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/lib.rs:
+/home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/boxes.rs:
+/home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/constants.rs:
+/home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/avif-serialize-0.8.5/src/writer.rs:

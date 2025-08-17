@@ -1,0 +1,11 @@
+/home/DiegoPatzan/Documents/UVG/6TO/GRAFICAS/proyecto1/target/debug/deps/av1_grain-80c28f0efc8f27fe.d: /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/lib.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/create.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/diff.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/diff/solver.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/diff/solver/util.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/parse.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/util.rs
+
+/home/DiegoPatzan/Documents/UVG/6TO/GRAFICAS/proyecto1/target/debug/deps/libav1_grain-80c28f0efc8f27fe.rmeta: /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/lib.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/create.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/diff.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/diff/solver.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/diff/solver/util.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/parse.rs /home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/util.rs
+
+/home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/lib.rs:
+/home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/create.rs:
+/home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/diff.rs:
+/home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/diff/solver.rs:
+/home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/diff/solver/util.rs:
+/home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/parse.rs:
+/home/DiegoPatzan/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/av1-grain-0.2.4/src/util.rs:

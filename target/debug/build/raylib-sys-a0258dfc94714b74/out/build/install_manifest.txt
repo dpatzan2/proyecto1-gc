@@ -1,0 +1,7 @@
+/home/DiegoPatzan/Documents/UVG/6TO/GRAFICAS/proyecto1/target/debug/build/raylib-sys-a0258dfc94714b74/out/lib/libraylib.a
+/home/DiegoPatzan/Documents/UVG/6TO/GRAFICAS/proyecto1/target/debug/build/raylib-sys-a0258dfc94714b74/out/include/raylib.h
+/home/DiegoPatzan/Documents/UVG/6TO/GRAFICAS/proyecto1/target/debug/build/raylib-sys-a0258dfc94714b74/out/include/rlgl.h
+/home/DiegoPatzan/Documents/UVG/6TO/GRAFICAS/proyecto1/target/debug/build/raylib-sys-a0258dfc94714b74/out/include/raymath.h
+/home/DiegoPatzan/Documents/UVG/6TO/GRAFICAS/proyecto1/target/debug/build/raylib-sys-a0258dfc94714b74/out/lib/pkgconfig/raylib.pc
+/home/DiegoPatzan/Documents/UVG/6TO/GRAFICAS/proyecto1/target/debug/build/raylib-sys-a0258dfc94714b74/out/lib/cmake/raylib/raylib-config-version.cmake
+/home/DiegoPatzan/Documents/UVG/6TO/GRAFICAS/proyecto1/target/debug/build/raylib-sys-a0258dfc94714b74/out/lib/cmake/raylib/raylib-config.cmake
