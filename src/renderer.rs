@@ -16,14 +16,13 @@ pub fn render(
     player: &Player,
     folders_collected: usize,
     fps: i32,
-    // Tiempo acumulado para animaciones
+
     elapsed_time: f32,
     guards: &Vec<crate::guard::Guard>,
 ) {
     let cell_size = 64.0f32;
     d.clear_background(Color::new(100, 150, 255, 255));
     
-    // Draw floor texture as background (bottom half)
     let floor_tile_size = 128;
     let tiles_x = (SCREEN_W + floor_tile_size - 1) / floor_tile_size;
     let tiles_y = (SCREEN_H/2 + floor_tile_size - 1) / floor_tile_size;
@@ -37,7 +36,7 @@ pub fn render(
         }
     }
 
-    // Overlay solid color only where floor samples fall on Goal tiles (perspective-correct patches)
+  
     overlay_goal_floor(d, grid, player, cell_size);
 
     let screen_w = SCREEN_W as usize;
@@ -80,14 +79,13 @@ pub fn render(
 }
 
 fn overlay_goal_floor(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, player: &Player, cell_size: f32) {
-    // Camera basis
+
     let dir_x = player.dir.cos();
     let dir_y = player.dir.sin();
     let plane_len = (FOV * 0.5).tan();
     let plane_x = -dir_y * plane_len;
     let plane_y =  dir_x * plane_len;
 
-    // Ray directions for left and right sides of the screen
     let ray0_x = dir_x - plane_x;
     let ray0_y = dir_y - plane_y;
     let ray1_x = dir_x + plane_x;
@@ -95,17 +93,16 @@ fn overlay_goal_floor(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, player: &
 
     let w = SCREEN_W as f32;
     let h = SCREEN_H as f32;
-    let pos_z = h * 0.5; // camera height in screen-space units
+    let pos_z = h * 0.5; 
 
     let rows = grid.len() as i32;
     let cols = grid[0].len() as i32;
 
-    // For each scanline below the horizon
+
     for y in (SCREEN_H/2 + 1)..SCREEN_H {
         let p = (y - SCREEN_H/2) as f32;
-        let row_dist = pos_z / p; // distance from camera to this row in world units (approx.)
+        let row_dist = pos_z / p; 
 
-        // World position for the leftmost pixel of this row and the step per pixel
         let mut floor_x = player.x + row_dist * ray0_x;
         let mut floor_y = player.y + row_dist * ray0_y;
         let step_x = row_dist * (ray1_x - ray0_x) / w;

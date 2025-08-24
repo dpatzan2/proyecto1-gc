@@ -1,25 +1,9 @@
-# Sector Centinela
 
-Proyecto de renderizado estilo raycasting (inspirado en Wolfenstein 3D) usando Rust y raylib. El jugador recorre niveles en 3D simulado, recoge folders y llega a la meta, con minimapa, texturas, sprites y audio.
-
-## Tabla de contenido
-- Instalación y requisitos
-- Cómo ejecutar
-- Controles
-- Estructura del proyecto
-- Lógica del juego
-- Renderizado y texturizado
-- Sprites y animaciones
-- Audio (música y SFX)
-- Niveles (formato y progresión)
-- Cómo crear/editar niveles
-- Parámetros y ajustes
-- Problemas conocidos
 
 ## Instalación y requisitos
 - Requiere Rust (edición 2024) y Cargo.
 - Dependencias principales: `raylib` (bindings a Raylib 5), `image`.
-- Linux: si el sistema no encuentra librerías gráficas, instala herramientas de compilación y dependencias comunes (ej. en Debian/Ubuntu: `build-essential`, `cmake`, `libasound2-dev`, `libx11-dev`, `libxrandr-dev`, `libxi-dev`, `libgl1-mesa-dev`).
+- Este proyecto fue desarrollado usando arch linux
 
 ## Cómo ejecutar
 - Ejecuta el juego con: `cargo run`.
@@ -58,12 +42,6 @@ Proyecto de renderizado estilo raycasting (inspirado en Wolfenstein 3D) usando R
 - Meta: al pisar un tile `Goal`, se considera el nivel completado.
 - Spawns: el jugador aparece en el primer `Floor` encontrado.
 
-## Renderizado y texturizado
-- Raycasting por columnas para paredes.
-- Piso texturizado (mitad inferior de la pantalla) con mosaico.
-- Superposición de color dorado sobre el piso cuando coincide con celdas `Goal` (indicador visual).
-- Minimap en 2D con paredes, objetivos y sprites.
-- Constantes principales: `SCREEN_W=1024`, `SCREEN_H=640`, `FOV=60°`, `RAY_STRIDE=2`.
 
 ## Sprites y animaciones
 - Sprites del mundo: `Folder`, `Guard1` (G), `Guard2` (H).
@@ -98,18 +76,4 @@ Proyecto de renderizado estilo raycasting (inspirado en Wolfenstein 3D) usando R
   - Coloca al menos una `g` (meta) y opcionalmente `f`, `G`, `H`.
 - Para registrar un nuevo nivel en el menú, agrega una entrada en el vector `levels` en `game.rs` (sección `Game::new`).
 
-## Parámetros y ajustes
-- Cambia la resolución en `renderer.rs` (`SCREEN_W`, `SCREEN_H`).
-- Ajusta FOV en `renderer.rs` (`FOV`).
-- Ajusta la densidad de rayos con `RAY_STRIDE`: valores más pequeños aumentan calidad pero bajan rendimiento.
-- Velocidad del jugador y giro: ver `player.rs` (`speed`, `rot_speed`).
 
-## Problemas conocidos
-- Guardias no tienen IA: se dibujan como sprites estáticos (solo animación visual).
-- Rotación por mouse requiere mantener el clic izquierdo.
-- La colisión es simple (círculo vs AABB de celdas); puede permitir deslizamientos en esquinas.
-- Si faltan texturas, se reemplazan por colores sólidos 1x1 (se verá plano).
-
----
-
-© 2025. Añade tu licencia preferida al repositorio si es necesario.
