@@ -5,6 +5,7 @@ mod cast;
 mod renderer;
 mod texture;
 mod framebuffer;
+mod guard;
 
 mod game;
 

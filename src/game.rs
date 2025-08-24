@@ -4,6 +4,7 @@ use crate::player::Player;
 use crate::texture::Textures;
 use crate::renderer::{render, SCREEN_W, SCREEN_H};
 use raylib::audio::RaylibAudio;
+use crate::guard::Guard;
 
 enum GameState { Menu, Playing, Completed }
 
@@ -14,6 +15,7 @@ pub struct Game {
     pub player: Option<Player>,
     pub textures: Textures,
     pub folders_collected: usize,
+    pub guards: Vec<Guard>,
     state: GameState,
     levels: Vec<(String, String)>,
     selected_level_idx: usize,
@@ -42,6 +44,7 @@ impl Game {
             player: None,
             textures,
             folders_collected: 0,
+            guards: Vec::new(),
             state: GameState::Menu,
             levels,
             selected_level_idx: 0,
@@ -64,9 +67,23 @@ impl Game {
             }
         }
         let player = Player::new(spawn_x as f32 * 64.0 + 32.0, spawn_y as f32 * 64.0 + 32.0);
+        // Extract guards from grid and replace with floor
+        let mut guards_vec: Vec<Guard> = Vec::new();
+        let mut grid = grid;
+        for (r, row) in grid.iter_mut().enumerate() {
+            for (c, cell) in row.iter_mut().enumerate() {
+                if *cell == Cell::Guard1 || *cell == Cell::Guard2 {
+                    let gx = (c as f32 + 0.5) * 64.0;
+                    let gy = (r as f32 + 0.5) * 64.0;
+                    guards_vec.push(Guard::new(gx, gy, *cell));
+                    *cell = Cell::Floor;
+                }
+            }
+        }
         self.grid = Some(grid);
         self.player = Some(player);
         self.folders_collected = 0;
+        self.guards = guards_vec;
         Ok(())
     }
 
@@ -134,6 +151,7 @@ impl Game {
                 }
                 GameState::Playing => {
                     if let (Some(grid), Some(player)) = (self.grid.as_mut(), self.player.as_mut()) {
+                        let mut reset_path: Option<String> = None;
                         input.apply_to_player(player, dt, grid, cell_size);
                         let gx = (player.x / cell_size).floor() as usize;
                         let gy = (player.y / cell_size).floor() as usize;
@@ -148,9 +166,27 @@ impl Game {
                         }
                         let mut success = false;
                         if gy < grid.len() && gx < grid[0].len() { if grid[gy][gx] == Cell::Goal { success = true; } }
+                        // Update guards
+            for g in self.guards.iter_mut() {
+                            g.update(player.x, player.y, dt, grid, cell_size);
+                            let dx = g.x - player.x;
+                            let dy = g.y - player.y;
+                            let d2 = dx*dx + dy*dy;
+                            if d2 < (g.radius + player.radius).powi(2) {
+                // mark reset after we finish using the mutable borrows
+                reset_path = Some(self.levels[self.selected_level_idx].1.clone());
+                break;
+                            }
+                        }
+
                         let fps = self.rl.get_fps() as i32;
                         let mut d = self.rl.begin_drawing(&self.thread);
-                        render(&mut d, &self.textures, grid, player, self.folders_collected, fps, self.elapsed_time);
+                        render(&mut d, &self.textures, grid, player, self.folders_collected, fps, self.elapsed_time, &self.guards);
+                        // drop mutable borrows before performing potentially reentrant operations
+                        drop(d);
+                        if let Some(p) = reset_path {
+                            let _ = self.setup_level(&p);
+                        }
                         if success { self.state = GameState::Completed; }
                     } else {
                         self.state = GameState::Menu;

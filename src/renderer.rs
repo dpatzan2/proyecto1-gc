@@ -18,6 +18,7 @@ pub fn render(
     fps: i32,
     // Tiempo acumulado para animaciones
     elapsed_time: f32,
+    guards: &Vec<crate::guard::Guard>,
 ) {
     let cell_size = 64.0f32;
     d.clear_background(Color::new(100, 150, 255, 255));
@@ -72,8 +73,8 @@ pub fn render(
         }
     }
 
-    draw_minimap(d, grid, player);
-    draw_world_sprites(d, grid, cell_size, player, textures, elapsed_time);
+    draw_minimap(d, grid, player, guards);
+    draw_world_sprites(d, grid, cell_size, player, textures, elapsed_time, guards);
     d.draw_text(&format!("Folders: {}", folders_collected), 10, SCREEN_H - 28, 20, Color::new(255,255,255,255));
     d.draw_text(&format!("FPS: {}", fps), SCREEN_W - 100, 10, 20, Color::new(255,255,255,255));
 }
@@ -130,7 +131,7 @@ fn overlay_goal_floor(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, player: &
     }
 }
 
-fn draw_minimap(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, player: &Player) {
+fn draw_minimap(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, player: &Player, guards: &Vec<crate::guard::Guard>) {
     let cols = grid[0].len() as i32;
     let rows = grid.len() as i32;
     let scale: i32 = 10;
@@ -152,7 +153,6 @@ fn draw_minimap(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, player: &Player
                 Cell::Wall => Color::DARKGRAY,
                 Cell::Goal => Color::GOLD,
                 Cell::Folder => Color::LIME,
-                Cell::Guard1 | Cell::Guard2 => Color::RED,
                 _ => Color::GRAY,
             };
             let rx = panel_x + pad + (x as i32) * scale + tile_padding;
@@ -162,6 +162,14 @@ fn draw_minimap(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, player: &Player
                 d.draw_rectangle(rx, ry, sz, sz, Color::new(color.r, color.g, color.b, 220));
             }
         }
+    }
+
+    // draw guards from dynamic list
+    for g in guards.iter() {
+        let gx = panel_x as f32 + pad as f32 + (g.x / 64.0) * scale as f32;
+        let gy = panel_y as f32 + pad as f32 + (g.y / 64.0) * scale as f32;
+        let s = 3;
+        d.draw_rectangle(gx as i32 - s, gy as i32 - s, s*2, s*2, Color::RED);
     }
 
     let px = panel_x as f32 + pad as f32 + (player.x / 64.0) * scale as f32;
@@ -202,7 +210,7 @@ fn draw_minimap(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, player: &Player
 #[derive(Clone, Copy)]
 enum SpriteAnim { Guard, Folder }
 
-fn draw_world_sprites(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, cell_size: f32, player: &Player, textures: &Textures, elapsed_time: f32) {
+fn draw_world_sprites(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, cell_size: f32, player: &Player, textures: &Textures, elapsed_time: f32, guards: &Vec<crate::guard::Guard>) {
     let rows = grid.len();
     let cols = grid[0].len();
     
@@ -227,6 +235,15 @@ fn draw_world_sprites(d: &mut RaylibDrawHandle, grid: &Vec<Vec<Cell>>, cell_size
                 }
                 _ => {}
             }
+        }
+    }
+
+    // Add dynamic guards as sprites
+    for g in guards.iter() {
+        match g.kind {
+            crate::level::Cell::Guard1 => sprites.push((g.x, g.y, &textures.guard1, SpriteAnim::Guard)),
+            crate::level::Cell::Guard2 => sprites.push((g.x, g.y, &textures.guard2, SpriteAnim::Guard)),
+            _ => {}
         }
     }
 

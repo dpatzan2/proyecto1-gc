@@ -40,7 +40,7 @@ impl Player {
     }
 }
 
-fn circle_collides(cx: f32, cy: f32, r: f32, grid: &Vec<Vec<Cell>>, cell_size: f32) -> bool {
+pub fn circle_collides(cx: f32, cy: f32, r: f32, grid: &Vec<Vec<Cell>>, cell_size: f32) -> bool {
     let rows = grid.len() as isize;
     let cols = if rows > 0 { grid[0].len() as isize } else { 0 };
     let min_col = ((cx - r) / cell_size).floor().max(0.0) as isize;

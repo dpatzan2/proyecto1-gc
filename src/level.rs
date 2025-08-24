@@ -38,16 +38,16 @@ pub fn load_level_from_file<P: AsRef<Path>>(path: P) -> Result<Vec<Vec<Cell>>, S
         }
         grid.push(row);
     }
-    // Ensure outer border is always walls so the player cannot leave the map
+   
     if !grid.is_empty() {
         let h = grid.len();
         let w = grid[0].len();
-        // Top and bottom rows
+        
         for x in 0..w {
             grid[0][x] = Cell::Wall;
             grid[h - 1][x] = Cell::Wall;
         }
-        // Left and right columns
+        
         for y in 0..h {
             grid[y][0] = Cell::Wall;
             grid[y][w - 1] = Cell::Wall;
