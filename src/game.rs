@@ -32,6 +32,7 @@ impl Game {
             ("Nivel 1".to_string(), "levels/level1.txt".to_string()),
             ("Nivel 2".to_string(), "levels/level2.txt".to_string()),
             ("Laberinto".to_string(), "levels/maze.txt".to_string()),
+            ("Nivel 3".to_string(), "levels/level3.txt".to_string()),
         ];
         let menu_bg = {
             let path = std::path::Path::new("textures/background.png");
