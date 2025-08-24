@@ -1,12 +1,13 @@
 
 
+
+https://github.com/user-attachments/assets/cdfc4924-c141-4fd3-aa7e-841cee36493f
+
+
 ## Instalación y requisitos
 - Requiere Rust (edición 2024) y Cargo.
 - Dependencias principales: `raylib` (bindings a Raylib 5), `image`.
 - Este proyecto fue desarrollado usando arch linux
-
-## Cómo ejecutar
-- Ejecuta el juego con: `cargo run`.
 
 ## Controles
 - Menú principal:
@@ -52,7 +53,7 @@
   - Guardias: respiración sutil y bobbing ligero.
 
 ## Audio (música y SFX)
-- Música de fondo en loop: `music/fondo.mp3`.
+- Música de fondo en loop (Ready for it? - Taylor swift - Instrumental): `music/fondo.mp3`.
 - SFX de recolección: `music/sonido.mp3` al tomar un folder.
 - Volumen de música ajustado a 0.45 por defecto.
 
